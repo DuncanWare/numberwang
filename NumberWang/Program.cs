@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -11,6 +12,7 @@ namespace NumberWang
     {
         static void Main(string[] args)
         {
+            PrepareConsole();
             GenerateTitle();
             NumberWang numberWang = new NumberWang();
             Player player = new Player();
@@ -22,8 +24,93 @@ namespace NumberWang
             RoundOne(numberWang, player, opponent);
             RoundTwo(numberWang, player, opponent);
             RoundThree(numberWang, player, opponent);
-
+            CallWinner(player, opponent);
+            DeathWang(player, opponent);
+            Goodbye();
+            PlayAgain();
         }
+
+        private static void PlayAgain()
+        {
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.WriteLine("Would you like another go? <Press any key to continue>");
+            Console.ReadKey(true);
+            string currentDirectory = AppContext.BaseDirectory;
+            System.Diagnostics.Process.Start($@"{currentDirectory}\NumberWang.exe");
+        }
+
+        private static void PrepareConsole()
+        {
+            Console.Title = "NumberWang - The Console Game To Turn To If You're Not Sure Whether It Is NumberWang Or Not";
+            Console.WindowHeight = Console.LargestWindowHeight;
+            Console.WindowWidth = Console.LargestWindowWidth;
+        }
+
+        private static void DeathWang(Player player, Opponent opponent)
+        {
+            if (player.Score == opponent.Score)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("Bring out the gas chambers!\n" + "Today the chambers are filled with the gaseous form of the number 2, which as you may remember from chemistry class is poisonous to humans.\n");
+                Console.WriteLine("<Press 'b' + 'Enter' to breathe> Time is of the essence!");
+                System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
+                stopwatch.Start();
+
+                for (int i = 0; i < 10; i++)
+                {
+                    Console.ReadLine();
+                }
+                stopwatch.Stop();
+                Thread.Sleep(2000);
+                Console.ReadKey(true);
+                TimeSpan ts = stopwatch.Elapsed;
+                int delay = (int)ts.TotalSeconds;
+                if (delay < 20)
+                {
+                    Console.WriteLine($"It looks like {player.Name} has DeathWanged - {player.Name} is today's winner!\n" +
+                    $"Look at {opponent.Name} vainly trying to suck up that 2 gas! Sorry {opponent.Name}, maybe next time.");
+                }
+                else
+                {
+                    Console.WriteLine($"Oh deary me, it looks like {opponent.Name} has wanged {opponent.PosPronoun} last, making {opponent.PosPronoun} today's winner!\n" +
+                        $"Look at {player.Name} vainly trying to suck up that 2 gas! Sorry {player.Name}, maybe next time.");
+                }
+            }
+        }
+
+        private static bool NewRandom(int chance)
+        {
+            Random random = new Random();
+            int randomNumber = random.Next(0, 100);
+            bool output = randomNumber < chance ? true : false;
+            return output;
+        }
+
+        private static void Goodbye()
+        {
+            Console.WriteLine("That's all for today's show, so until next time, GoodNumberWang!");
+        }
+
+        private static void CallWinner(Player player, Opponent opponent)
+        {
+            Console.ForegroundColor = ConsoleColor.Magenta;
+            Thread.Sleep(1000);
+            Console.WriteLine("What a game of WangerNum! With the scores now tallied I can say that");
+            if (player.Score > opponent.Score)
+            {
+                Console.WriteLine($"*** {player.Name} wins with {player.Score} point(s) versus {opponent.Name}'s {opponent.Score} - congratulations {player.Name}! ***");
+            }
+            else if (player.Score == opponent.Score)
+            {
+                Console.WriteLine($"It's neck and neck at {player.Score} point(s), and you know what that means...\n" +
+                    "It's time to play DeathWang!");
+            }
+            else
+            {
+                Console.WriteLine($"*** {opponent.Name} wins with {opponent.Score} point(s) versus {player.Name}'s {player.Score} - congratulations {opponent.Name}! ***");
+            }
+        }
+
         private static void IntroOpponent(Opponent opponent)
         {
             Thread.Sleep(1000);
@@ -66,7 +153,8 @@ namespace NumberWang
         private static void RoundThree(NumberWang numberWang, Player player, Opponent opponent)
         {
             Console.ForegroundColor = ConsoleColor.White;
-            Console.WriteLine($"{player.Name} is on {player.Score} point(s), so it's time for...");
+            int totalPoints = player.Score + opponent.Score;
+            Console.WriteLine($"With {totalPoints} NumberWang(s) so far, it's time for...");
             Thread.Sleep(1500);
             GenerateWangerNumTitle();
             Thread.Sleep(1500);
@@ -101,6 +189,8 @@ namespace NumberWang
             {
                 Console.WriteLine(line);
             }
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.BackgroundColor = ConsoleColor.Black;
             Thread.Sleep(1500);
         }
 
@@ -150,7 +240,7 @@ namespace NumberWang
             Console.WriteLine($"{opponent.Name}, give me a number, please.");
             float response = random.Next();
             long responseLong = (long)response;
-            Thread.Sleep(1000);
+            Thread.Sleep(1500);
             Console.WriteLine(responseLong);
             return response;
         }

@@ -8,6 +8,8 @@ namespace NumberWang
 {
     class Opponent : Player
     {
+        public string PosPronoun { get; }
+        public string ThirdPronoun { get; }
         public Opponent()
         { 
             Random random = new Random();
@@ -15,10 +17,14 @@ namespace NumberWang
             if (randomNumber < 50)
             {
                 Name = "Julie";
+                PosPronoun = "her";
+                ThirdPronoun = "her";
             }
             else
             {
                 Name = "Mark";
+                PosPronoun = "his";
+                ThirdPronoun = "him";
             }
         }
     }
